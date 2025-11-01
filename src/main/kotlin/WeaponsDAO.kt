@@ -88,6 +88,7 @@ object WeaponsDAO {
                 pstmt.setInt(4, weapon.fire_rate)
                 pstmt.setInt(5, weapon.damage_falloff)
                 pstmt.setInt(6, weapon.damage)
+                pstmt.setInt(7, weapon.weapon_id)
                 val filas = pstmt.executeUpdate()
                 if (filas > 0) {
                     println("Arma  con id=${weapon.weapon_id} actualizado con éxito.")

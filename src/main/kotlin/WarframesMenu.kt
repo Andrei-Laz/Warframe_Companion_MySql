@@ -38,8 +38,11 @@ fun warframeMenu() {
             }
 
             2 -> {
-                val warframe = WarframesDAO.consultarWarframePorID(2)
-
+                print("Ingresa el ID del Warframe: ")
+                val input = scanner.nextLine()
+                val id = input.toIntOrNull()
+                if (id != null) {
+                    val warframe = WarframesDAO.consultarWarframePorID(id)
                     if (warframe != null) {
                         println(
                             """
@@ -54,32 +57,11 @@ fun warframeMenu() {
                             """.trimIndent()
                         )
                     } else {
-                        println("No se encontró ningún Warframe con ese  id")
+                        println("No se encontró ningún Warframe con id=$id.")
                     }
-//                print("Ingresa el ID del Warframe: ")
-//                val input = scanner.nextLine()
-//                val id = input.toIntOrNull()
-//                if (id != null) {
-//                    val warframe = WarframesDAO.consultarWarframePorID(id)
-//                    if (warframe != null) {
-//                        println(
-//                            """
-//                            === WARFRAME ENCONTRADO ===
-//                            ID: ${warframe.warframe_id}
-//                            Name: ${warframe.name}
-//                            Health: ${warframe.health}
-//                            Armor: ${warframe.armor}
-//                            Energy: ${warframe.energy}
-//                            Sprint Speed: ${warframe.sprint_speed}
-//                            Passive: ${warframe.passive}
-//                            """.trimIndent()
-//                        )
-//                    } else {
-//                        println("No se encontró ningún Warframe con id=$id.")
-//                    }
-//                } else {
-//                    println("ID inválido.")
-//                }
+                } else {
+                    println("ID inválido.")
+                }
             }
 
             3 -> {
@@ -115,22 +97,24 @@ fun warframeMenu() {
                 print("Ingrese el ID del Warframe a actualizar: ")
                 val id = scanner.nextLine().toIntOrNull()
                 if (id != null) {
-                    val existente = WarframesDAO.consultarWarframePorID(id)
-                    if (existente != null) {
-                        print("Nuevo nombre (${existente.name}): ")
-                        val name = scanner.nextLine().ifBlank { existente.name }
-                        print("Health (${existente.health}): ")
-                        val health = scanner.nextLine().toIntOrNull() ?: existente.health
-                        print("Armor (${existente.armor}): ")
-                        val armor = scanner.nextLine().toIntOrNull() ?: existente.armor
-                        print("Energy (${existente.energy}): ")
-                        val energy = scanner.nextLine().toIntOrNull() ?: existente.energy
-                        print("Sprint Speed (${existente.sprint_speed}): ")
-                        val sprint = scanner.nextLine().toDoubleOrNull() ?: existente.sprint_speed
-                        print("Passive (${existente.passive}): ")
-                        val passive = scanner.nextLine().ifBlank { existente.passive }
+                    val currentStats = WarframesDAO.consultarWarframePorID(id)
+                    if (currentStats != null) {
+                        val id = currentStats.warframe_id
+                        println("ID warframe: ${currentStats.warframe_id}")
+                        print("Nuevo nombre (${currentStats.name}): ")
+                        val name = scanner.nextLine().ifBlank { currentStats.name }
+                        print("Health (${currentStats.health}): ")
+                        val health = scanner.nextLine().toIntOrNull() ?: currentStats.health
+                        print("Armor (${currentStats.armor}): ")
+                        val armor = scanner.nextLine().toIntOrNull() ?: currentStats.armor
+                        print("Energy (${currentStats.energy}): ")
+                        val energy = scanner.nextLine().toIntOrNull() ?: currentStats.energy
+                        print("Sprint Speed (${currentStats.sprint_speed}): ")
+                        val sprint = scanner.nextLine().toDoubleOrNull() ?: currentStats.sprint_speed
+                        print("Passive (${currentStats.passive}): ")
+                        val passive = scanner.nextLine().ifBlank { currentStats.passive }
 
-                        val actualizado = existente.copy(
+                        val actualizado = currentStats.copy(
                             name = name,
                             health = health,
                             armor = armor,

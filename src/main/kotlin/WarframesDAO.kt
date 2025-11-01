@@ -36,7 +36,7 @@ object WarframesDAO {
     fun consultarWarframePorID(id: Int): Warframe? {
         var warframe: Warframe? = null
         conectarBD()?.use { conn ->
-            conn.prepareStatement("SELECT * FROM Warframes WHERE warframe = ?").use { pstmt ->
+            conn.prepareStatement("SELECT * FROM Warframes WHERE warframe_id = ?").use { pstmt ->
                 pstmt.setInt(1, id)
                 pstmt.executeQuery().use { rs ->
                     if (rs.next()) {
@@ -88,6 +88,7 @@ object WarframesDAO {
                 pstmt.setInt(4, warframe.energy)
                 pstmt.setDouble(5, warframe.sprint_speed)
                 pstmt.setString(6, warframe.passive)
+                pstmt.setInt(7, warframe.warframe_id)
                 val filas = pstmt.executeUpdate()
                 if (filas > 0) {
                     println("Warframe con id=${warframe.warframe_id} actualizado con éxito.")

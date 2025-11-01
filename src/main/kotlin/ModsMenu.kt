@@ -9,11 +9,11 @@ fun modMenu() {
             """
 
             ==== MOD DATABASE MENU ====
-            1. Listar mods
-            2. Consultar mod por ID
-            3. Insertar nuevo mod
-            4. Actualizar mod
-            5. Eliminar mod
+            1. Listar Mods
+            2. Consultar Mod por ID
+            3. Insertar nuevo Mod
+            4. Actualizar Mod
+            5. Eliminar Mod
             0. Salir
             =================================
             Elige una opción:
@@ -27,89 +27,94 @@ fun modMenu() {
             1 -> {
                 println("Lista de Mods:")
                 ModsDAO.listarMods().forEach {
-                    println("[${it.mod_id}]\n\t" +
-                            "Name: ${it.name}\n\t" +
-                            "Capacity Cost: ${it.capacity_cost}\n\t" +
-                            "Polarity: ${it.polarity}\n\t" +
-                            "Rarity: ${it.rarity}\n\t" +
-                            "Description: ${it.description}")
+                    println(
+                        "[${it.mod_id}]\n\t" +
+                                "Name: ${it.name}\n\t" +
+                                "Capacity Cost: ${it.capacity_cost}\n\t" +
+                                "Polarity: ${it.polarity}\n\t" +
+                                "Rarity: ${it.rarity}\n\t" +
+                                "Description: ${it.description}"
+                    )
                 }
             }
 
             2 -> {
-                print("Ingrese el ID del arma: ")
+                print("Ingrese el ID del Mod: ")
                 val id = scanner.nextLine().toIntOrNull()
                 if (id != null) {
-                    val arma = WeaponsDAO.consultarArmaPorID(id)
-                    if (arma != null) {
+                    val mod = ModsDAO.consultarModPorID(id)
+                    if (mod != null) {
                         println(
                             """
-                            === ARMA ENCONTRADA ===
-                            ID: ${arma.weapon_id}
-                            Name: ${arma.name}
-                            Crit Chance: ${arma.critical_chance}%
-                            Crit Damage: ${arma.critical_damage}x
-                            Fire Rate: ${arma.fire_rate}
-                            Damage Falloff: ${arma.damage_falloff}
-                            Damage: ${arma.damage}
+                            === MOD ENCONTRADO ===
+                            ID: ${mod.mod_id}
+                            Name: ${mod.name}
+                            Capacity Cost: ${mod.capacity_cost}
+                            Polarity: ${mod.polarity}
+                            Rarity: ${mod.rarity}
+                            Description: ${mod.description}
                             """.trimIndent()
                         )
-                    } else println("No se encontró ninguna arma con id=$id.")
+                    } else println("No se encontró ningún Mod con id=$id.")
                 } else println("ID inválido.")
             }
 
             3 -> {
-                println("=== Insertar nueva Arma ===")
+                println("=== Insertar nuevo Mod ===")
                 print("Nombre: "); val name = scanner.nextLine()
-                print("Critical Chance (%): "); val cc = scanner.nextLine().toIntOrNull() ?: 0
-                print("Critical Damage (x): "); val cd = scanner.nextLine().toDoubleOrNull() ?: 1.0
-                print("Fire Rate: "); val fr = scanner.nextLine().toIntOrNull() ?: 1
-                print("Damage Falloff: "); val df = scanner.nextLine().toIntOrNull() ?: 0
-                print("Damage: "); val dmg = scanner.nextLine().toIntOrNull() ?: 0
+                print("Capacity Cost: "); val cost = scanner.nextLine().toIntOrNull() ?: 0
+                print("Polarity: "); val polarity = scanner.nextLine()
+                print("Rarity: "); val rarity = scanner.nextLine()
+                print("Description: "); val desc = scanner.nextLine()
 
-                val nuevaArma = Weapon(null, name, cc, cd, fr, df, dmg)
-                WeaponsDAO.insertarArma(nuevaArma)
+                val nuevoMod = Mod(
+                    mod_id = null,
+                    name = name,
+                    capacity_cost = cost,
+                    polarity = polarity,
+                    rarity = rarity,
+                    description = desc
+                )
+
+                ModsDAO.insertarMod(nuevoMod)
             }
 
             4 -> {
-                println("=== Actualizar Arma ===")
-                print("Ingrese el ID del arma: ")
+                println("=== Actualizar Mod ===")
+                print("Ingrese el ID del Mod: ")
                 val id = scanner.nextLine().toIntOrNull()
                 if (id != null) {
-                    val existente = WeaponsDAO.consultarArmaPorID(id)
+                    val existente = ModsDAO.consultarModPorID(id)
                     if (existente != null) {
                         print("Nuevo nombre (${existente.name}): ")
                         val name = scanner.nextLine().ifBlank { existente.name }
-                        print("Crit Chance (${existente.critical_chance}): ")
-                        val cc = scanner.nextLine().toIntOrNull() ?: existente.critical_chance
-                        print("Crit Damage (${existente.critical_damage}): ")
-                        val cd = scanner.nextLine().toDoubleOrNull() ?: existente.critical_damage
-                        print("Fire Rate (${existente.fire_rate}): ")
-                        val fr = scanner.nextLine().toIntOrNull() ?: existente.fire_rate
-                        print("Damage Falloff (${existente.damage_falloff}): ")
-                        val df = scanner.nextLine().toIntOrNull() ?: existente.damage_falloff
-                        print("Damage (${existente.damage}): ")
-                        val dmg = scanner.nextLine().toIntOrNull() ?: existente.damage
+                        print("Capacity Cost (${existente.capacity_cost}): ")
+                        val cost = scanner.nextLine().toIntOrNull() ?: existente.capacity_cost
+                        print("Polarity (${existente.polarity}): ")
+                        val polarity = scanner.nextLine().ifBlank { existente.polarity }
+                        print("Rarity (${existente.rarity}): ")
+                        val rarity = scanner.nextLine().ifBlank { existente.rarity }
+                        print("Description (${existente.description}): ")
+                        val desc = scanner.nextLine().ifBlank { existente.description }
 
-                        val actualizada = existente.copy(
+                        val actualizado = existente.copy(
                             name = name,
-                            critical_chance = cc,
-                            critical_damage = cd,
-                            fire_rate = fr,
-                            damage_falloff = df,
-                            damage = dmg
+                            capacity_cost = cost,
+                            polarity = polarity,
+                            rarity = rarity,
+                            description = desc
                         )
 
-                        WeaponsDAO.actualizarArma(actualizada)
-                    } else println("No se encontró ninguna arma con id=$id.")
+                        ModsDAO.actualizarMod(actualizado)
+                    } else println("No se encontró ningún Mod con id=$id.")
                 } else println("ID inválido.")
             }
 
             5 -> {
-                println("=== Eliminar Arma ===")
-                print("Ingrese el ID del arma: ")
+                println("=== Eliminar Mod ===")
+                print("Ingrese el ID del Mod: ")
                 val id = scanner.nextLine().toIntOrNull()
-                if (id != null) WeaponsDAO.eliminarArma(id)
+                if (id != null) ModsDAO.eliminarMod(id)
                 else println("ID inválido.")
             }
 

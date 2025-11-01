@@ -83,6 +83,7 @@ object ModsDAO {
                 pstmt.setString(3, mod.polarity)
                 pstmt.setString(4, mod.rarity)
                 pstmt.setString(5, mod.description)
+                pstmt.setInt(6, mod.mod_id)
                 val filas = pstmt.executeUpdate()
                 if (filas > 0) {
                     println("Mod con id=${mod.mod_id} actualizada con éxito.")
