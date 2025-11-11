@@ -4,10 +4,12 @@ import java.sql.SQLException
 import java.util.Scanner
 
 const val URL_BD = "jdbc:mysql://34.224.116.178:3306/Warframe_Companion_DB"
+const val USER = "Andrei"
+const val PASSWORD = "yA044SbY"
 
 fun conectarBD(): Connection? {
     return try {
-        DriverManager.getConnection(URL_BD)
+        DriverManager.getConnection(URL_BD, USER, PASSWORD)
     } catch (e: SQLException) {
         e.printStackTrace()
         null
@@ -21,7 +23,6 @@ fun main() {
     do {
         println(
             """
-            
             ==== WARFRAME COMPANION MENU ====
             1. Warframe database menu
             2. Weapon database menu
