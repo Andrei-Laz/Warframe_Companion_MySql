@@ -27,7 +27,7 @@ fun warframeMenu() {
             1 -> {
                 println("Lista de Warframes:")
                 WarframesDAO.listarWarframes().forEach {
-                    println("[${it.warframe_id}]\n\t" +
+                    println("[ID: ${it.warframe_id}]\n\t" +
                             "Name: ${it.name}\n\t" +
                             "Health: ${it.health}\n\t" +
                             "Armor: ${it.armor}\n\t" +

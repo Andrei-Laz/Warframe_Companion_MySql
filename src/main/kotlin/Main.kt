@@ -3,7 +3,7 @@ import java.sql.DriverManager
 import java.sql.SQLException
 import java.util.Scanner
 
-const val URL_BD = "jdbc:sqlite:src/main/resources/Warframe_Companion_DB.sqlite"
+const val URL_BD = "jdbc:mysql://34.224.116.178:3306/Warframe_Companion_DB"
 
 fun conectarBD(): Connection? {
     return try {

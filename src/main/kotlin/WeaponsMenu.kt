@@ -30,7 +30,7 @@ fun weaponMenu() {
             1 -> {
                 println("Lista de armas:")
                 WeaponsDAO.listarArmas().forEach {
-                    println("[${it.weapon_id}]\n\t" +
+                    println("[ID: ${it.weapon_id}]\n\t" +
                             "Name: ${it.name}\n\t" +
                             "Health: ${it.critical_chance}\n\t" +
                             "Armor: ${it.critical_damage}\n\t" +

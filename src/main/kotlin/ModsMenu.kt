@@ -28,7 +28,7 @@ fun modMenu() {
                 println("Lista de Mods:")
                 ModsDAO.listarMods().forEach {
                     println(
-                        "[${it.mod_id}]\n\t" +
+                        "[ID: ${it.mod_id}]\n\t" +
                                 "Name: ${it.name}\n\t" +
                                 "Capacity Cost: ${it.capacity_cost}\n\t" +
                                 "Polarity: ${it.polarity}\n\t" +

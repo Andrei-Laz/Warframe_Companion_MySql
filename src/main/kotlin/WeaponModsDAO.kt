@@ -89,7 +89,7 @@ object WeaponModsDAO {
                 pstmt.setInt(2, mod_id)
                 val filas = pstmt.executeUpdate()
                 if (filas > 0)
-                    println("🗑Relación entre mod $mod_id y arma $weapon_id eliminada.")
+                    println("Relación entre mod $mod_id y arma $weapon_id eliminada.")
                 else
                     println("No se encontró la relación para eliminar.")
             }

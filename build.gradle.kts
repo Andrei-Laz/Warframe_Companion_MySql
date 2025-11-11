@@ -11,7 +11,7 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
-    implementation("org.xerial:sqlite-jdbc:3.43.0.0")
+    implementation("com.mysql:mysql-connector-j:8.3.0")
 }
 
 tasks.test {
