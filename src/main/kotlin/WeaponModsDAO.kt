@@ -1,9 +1,8 @@
 import java.sql.SQLException
 
-data class WeaponMod(
-    val weapon_mod_id: Int? = null,
-    val weapon_id: Int,
-    val mod_id: Int
+data class WeaponWithMods(
+    val weapon: Weapon,
+    val mods: List<Mod>
 )
 
 
@@ -94,5 +93,49 @@ object WeaponModsDAO {
                     println("No se encontró la relación para eliminar.")
             }
         }
+    }
+
+    fun llamar_sp_get_wpn_full_details(weaponId: Int): WeaponWithMods? {
+        conectarBD()?.use { conn ->
+            val sqlProcedimiento = "{CALL sp_get_wpn_full_details(?)}"
+            conn.prepareCall(sqlProcedimiento).use { call ->
+                call.setInt(1, weaponId)
+                call.executeQuery().use { rs ->
+
+                    var weapon: Weapon? = null
+                    val modsList = mutableListOf<Mod>()
+
+                    while (rs.next()) {
+                        if (weapon == null) {
+                            weapon = Weapon(
+                                weapon_id = rs.getInt("weapon_id"),
+                                name = rs.getString("weapon_name"),
+                                critical_chance = rs.getInt("critical_chance"),
+                                critical_damage = rs.getDouble("critical_damage"),
+                                fire_rate = rs.getDouble("fire_rate"),
+                                damage_falloff = rs.getInt("damage_falloff"),
+                                damage = rs.getInt("damage")
+                            )
+                        }
+
+                        val modId = rs.getInt("mod_id")
+                        if (!rs.wasNull() && modId != 0) {
+                            val mod = Mod(
+                                mod_id = modId,
+                                name = rs.getString("mod_name"),
+                                capacity_cost = rs.getInt("capacity_cost"),
+                                polarity = rs.getString("polarity"),
+                                rarity = rs.getString("rarity"),
+                                description = rs.getString("description") ?: ""
+                            )
+                            modsList.add(mod)
+                        }
+                    }
+
+                    return weapon?.let { WeaponWithMods(it, modsList) }
+                }
+            }
+        }
+        return null
     }
 }

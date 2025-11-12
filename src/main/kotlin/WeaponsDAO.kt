@@ -1,9 +1,11 @@
+import java.sql.SQLException
+
 data class Weapon(
     val weapon_id: Int? = null,
     val name: String,
     val critical_chance: Int,
     val critical_damage: Double,
-    val fire_rate: Int,
+    val fire_rate: Double,
     val damage_falloff: Int,
     val damage: Int
 )
@@ -21,7 +23,7 @@ object WeaponsDAO {
                                 name = rs.getString("name"),
                                 critical_chance = rs.getInt("critical_chance"),
                                 critical_damage = rs.getDouble("critical_damage"),
-                                fire_rate = rs.getInt("fire_rate"),
+                                fire_rate = rs.getDouble("fire_rate"),
                                 damage_falloff = rs.getInt("damage_falloff"),
                                 damage = rs.getInt("damage")
                             )
@@ -45,7 +47,7 @@ object WeaponsDAO {
                             name = rs.getString("name"),
                             critical_chance = rs.getInt("critical_chance"),
                             critical_damage = rs.getDouble("critical_damage"),
-                            fire_rate = rs.getInt("fire_rate"),
+                            fire_rate = rs.getDouble("fire_rate"),
                             damage_falloff = rs.getInt("damage_falloff"),
                             damage = rs.getInt("damage")
                         )
@@ -64,7 +66,7 @@ object WeaponsDAO {
                 pstmt.setString(1, weapon.name)
                 pstmt.setInt(2,weapon.critical_chance)
                 pstmt.setDouble(3, weapon.critical_damage)
-                pstmt.setInt(4, weapon.fire_rate)
+                pstmt.setDouble(4, weapon.fire_rate)
                 pstmt.setInt(5, weapon.damage_falloff)
                 pstmt.setInt(6, weapon.damage)
                 pstmt.executeUpdate()
@@ -85,7 +87,7 @@ object WeaponsDAO {
                 pstmt.setString(1, weapon.name)
                 pstmt.setInt(2,weapon.critical_chance)
                 pstmt.setDouble(3, weapon.critical_damage)
-                pstmt.setInt(4, weapon.fire_rate)
+                pstmt.setDouble(4, weapon.fire_rate)
                 pstmt.setInt(5, weapon.damage_falloff)
                 pstmt.setInt(6, weapon.damage)
                 pstmt.setInt(7, weapon.weapon_id)
@@ -127,4 +129,34 @@ object WeaponsDAO {
             }
         }
     }
+
+    fun llamar_sp_insert_wpn_with_validation(weapon: Weapon) {
+        conectarBD()?.use { conn ->
+            val sqlProcedimiento = "{CALL sp_insert_wpn_with_validation(?, ?, ?, ?, ?, ?)}"
+            conn.prepareCall(sqlProcedimiento).use { call ->
+                call.setString(1, weapon.name)
+                call.setInt(2, weapon.critical_chance)
+                call.setDouble(3, weapon.critical_damage)
+                call.setDouble(4, weapon.fire_rate)
+                call.setInt(5, weapon.damage_falloff)
+                call.setInt(6, weapon.damage)
+
+                try {
+                    call.executeQuery().use { rs ->
+                        if (rs.next()) {
+                            val mensaje = rs.getString("message")
+                            println("Éxito: $mensaje")
+                        }
+                    }
+                } catch (e: SQLException) {
+                    if (e.message?.contains("Ya existe un arma con ese nombre") == true) {
+                        println("Error: Ya existe un arma llamada '${weapon.name}'")
+                    } else {
+                        println("Error de base de datos: ${e.message}")
+                    }
+                }
+            }
+        }
+    }
+
 }

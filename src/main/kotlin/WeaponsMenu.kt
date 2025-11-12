@@ -18,6 +18,8 @@ fun weaponMenu() {
             7. Mostrar las mods de un arma
             8. Eliminar mod de un arma
             9. Calcular daño crítico de un arma
+            10. Inserta nueva arma con validación
+            11. Consulta información completa de un arma
             0. Salir
             =================================
             Elige una opción:
@@ -33,11 +35,11 @@ fun weaponMenu() {
                 WeaponsDAO.listarArmas().forEach {
                     println("[ID: ${it.weapon_id}]\n\t" +
                             "Name: ${it.name}\n\t" +
-                            "Health: ${it.critical_chance}\n\t" +
-                            "Armor: ${it.critical_damage}\n\t" +
-                            "Energy: ${it.fire_rate}\n\t" +
-                            "Sprint Speed: ${it.damage_falloff}\n\t" +
-                            "Passive: ${it.damage}")
+                            "Critical Chance: ${it.critical_chance}\n\t" +
+                            "Critical Damage: ${it.critical_damage}\n\t" +
+                            "Fire Rate:: ${it.fire_rate}\n\t" +
+                            "Damage Falloff: ${it.damage_falloff}\n\t" +
+                            "Damage: ${it.damage}")
                 }
             }
 
@@ -68,7 +70,7 @@ fun weaponMenu() {
                 print("Nombre: "); val name = scanner.nextLine()
                 print("Critical Chance (%): "); val cc = scanner.nextLine().toIntOrNull() ?: 0
                 print("Critical Damage (x): "); val cd = scanner.nextLine().toDoubleOrNull() ?: 1.0
-                print("Fire Rate: "); val fr = scanner.nextLine().toIntOrNull() ?: 1
+                print("Fire Rate: "); val fr = scanner.nextLine().toDoubleOrNull() ?: 1.0
                 print("Damage Falloff: "); val df = scanner.nextLine().toIntOrNull() ?: 0
                 print("Damage: "); val dmg = scanner.nextLine().toIntOrNull() ?: 0
 
@@ -90,7 +92,7 @@ fun weaponMenu() {
                         print("Crit Damage (${existente.critical_damage}): ")
                         val cd = scanner.nextLine().toDoubleOrNull() ?: existente.critical_damage
                         print("Fire Rate (${existente.fire_rate}): ")
-                        val fr = scanner.nextLine().toIntOrNull() ?: existente.fire_rate
+                        val fr = scanner.nextLine().toDoubleOrNull() ?: existente.fire_rate
                         print("Damage Falloff (${existente.damage_falloff}): ")
                         val df = scanner.nextLine().toIntOrNull() ?: existente.damage_falloff
                         print("Damage (${existente.damage}): ")
@@ -173,6 +175,56 @@ fun weaponMenu() {
                     println("ID inválido.")
                 }
 
+            }
+
+            10 -> {
+                println("=== Insertar nueva Arma con Validación ===")
+                print("Nombre: "); val name = scanner.nextLine()
+                print("Critical Chance (%): "); val cc = scanner.nextLine().toIntOrNull() ?: 0
+                print("Critical Damage (x): "); val cd = scanner.nextLine().toDoubleOrNull() ?: 1.0
+                print("Fire Rate: "); val fr = scanner.nextLine().toDoubleOrNull() ?: 1.0
+                print("Damage Falloff: "); val df = scanner.nextLine().toIntOrNull() ?: 0
+                print("Damage: "); val dmg = scanner.nextLine().toIntOrNull() ?: 0
+
+                val nuevaArma = Weapon(null, name, cc, cd, fr, df, dmg)
+                WeaponsDAO.llamar_sp_insert_wpn_with_validation(nuevaArma)
+            }
+
+            11 -> {
+                println("=== Consultar toda la información de un arma ===")
+                print("Ingrese el ID del arma: ")
+                val id = scanner.nextLine().toIntOrNull()
+
+                if (id != null) {
+                    val detalles = WeaponModsDAO.llamar_sp_get_wpn_full_details(id)
+
+                    if (detalles != null) {
+                        println("\n=== DETALLES DEL ARMA ===")
+                        println("ID: ${detalles.weapon.weapon_id}")
+                        println("Name: ${detalles.weapon.name}")
+                        println("Critical Chance: ${detalles.weapon.critical_chance}%")
+                        println("Critical Damage: ${detalles.weapon.critical_damage}x")
+                        println("Fire Rate: ${detalles.weapon.fire_rate}")
+                        println("Damage Falloff: ${detalles.weapon.damage_falloff}")
+                        println("Damage: ${detalles.weapon.damage}")
+
+                        println("\n=== MODS INSTALADOS (${detalles.mods.size}) ===")
+                        if (detalles.mods.isNotEmpty()) {
+                            detalles.mods.forEach { mod ->
+                                println(" - ${mod.name}")
+                                println("   Cost: ${mod.capacity_cost} | Polarity: ${mod.polarity} | Rarity: ${mod.rarity}")
+                                println("   Description: ${mod.description}")
+                                println()
+                            }
+                        } else {
+                            println(" - Esta arma no tiene mods asignados")
+                        }
+                    } else {
+                        println("No se encontró el arma con ID: $id") // Cambié weaponId por id aquí también
+                    }
+                } else {
+                    println("Error: ID inválido. Debe ser un número entero.")
+                }
             }
 
             0 -> println("Saliendo del menú...")
