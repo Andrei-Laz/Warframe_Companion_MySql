@@ -14,6 +14,7 @@ fun warframeMenu() {
             3. Insertar nuevo Warframe
             4. Actualizar Warframe
             5. Eliminar Warframe
+            6. Calcular EHP de un warframe
             0. Salir
             =================================
             Elige una opción:
@@ -141,6 +142,20 @@ fun warframeMenu() {
                 } else {
                     println("ID inválido.")
                 }
+            }
+
+            6 -> {
+
+                println("=== Calcular los EHP(puntos de vida efectivos) de un Warframe")
+                println("Ingrese el ID del Warframe: ")
+                val id = scanner.nextLine().toIntOrNull()
+                if (id != null) {
+                    WarframesDAO.llamar_fn_get_ehp(id)
+                }
+                else {
+                    println("ID inválido")
+                }
+
             }
 
             0 -> println("Saliendo del menú...")

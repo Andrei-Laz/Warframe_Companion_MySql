@@ -112,4 +112,19 @@ object WeaponsDAO {
             }
         } ?: println("No se pudo establecer la conexión.")
     }
+
+    fun llamar_fn_get_dmg_on_crit(id: Int) {
+        conectarBD()?.use { conn ->
+            val sql = "SELECT fn_get_dmg_on_crit(?)"
+            conn.prepareStatement(sql).use { stmt ->
+                stmt.setInt(1, id)
+                stmt.executeQuery().use { rs ->
+                    if (rs.next()) {
+                        val resultado = rs.getInt(1)
+                        println("El daño real del arma aplicando los multiplicadores críticos es: $resultado")
+                    }
+                }
+            }
+        }
+    }
 }

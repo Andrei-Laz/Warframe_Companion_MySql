@@ -17,6 +17,7 @@ fun weaponMenu() {
             6. Añadir mod a un arma
             7. Mostrar las mods de un arma
             8. Eliminar mod de un arma
+            9. Calcular daño crítico de un arma
             0. Salir
             =================================
             Elige una opción:
@@ -153,9 +154,25 @@ fun weaponMenu() {
                 val wid = scanner.nextLine().toIntOrNull()
                 print("Ingrese el ID del mod: ")
                 val mid = scanner.nextLine().toIntOrNull()
-                if (wid != null && mid != null)
+                if (wid != null && mid != null) {
                     WeaponModsDAO.eliminarRelacion(wid, mid)
-                else println("IDs inválidos.")
+                }
+                else {
+                    println("IDs inválidos.")
+                }
+            }
+
+            9 -> {
+                println("=== Calcular el daño de un arma al aplicar los multiplicadores críticos")
+                print("Ingrese el ID del arma: ")
+                val id = scanner.nextLine().toIntOrNull()
+                if (id != null) {
+                    WeaponsDAO.llamar_fn_get_dmg_on_crit(id)
+                }
+                else {
+                    println("ID inválido.")
+                }
+
             }
 
             0 -> println("Saliendo del menú...")

@@ -10,17 +10,16 @@ CREATE FUNCTION fn_get_ehp(p_id_warframe INT)
 BEGIN
     DECLARE v_health DOUBLE;
     DECLARE v_armor DOUBLE;
-    DECLARE v_shields DOUBLE;
     DECLARE ehp DOUBLE;
 
     -- Get the warframe stats
-    SELECT health, armor, shields
-    INTO v_health, v_armor, v_shields
+    SELECT health, armor
+    INTO v_health, v_armor
     FROM Warframes
     WHERE warframe_id = p_id_warframe;
 
     
-    SET ehp = (v_health * ((v_armor + 300) / 300)) + v_shields;
+    SET ehp = (v_health * ((v_armor + 300) / 300));
 
     RETURN ehp;
 END;
